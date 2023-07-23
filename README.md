@@ -23,7 +23,7 @@
 
 <p>Clone this repository to your local machine using Git:</p>
 
-<pre><code>git clone https://github.com/your-username/your-repo.git</code></pre>
+<pre><code>git clone https://github.com/Alirale/SimpleAPI.git</code></pre>
 
 <h3>Configuration</h3>
 
