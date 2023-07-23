@@ -34,10 +34,11 @@
 </ol>
 
 <pre><code>{
-  "JwtSettings": {
-    "SecretKey": "your_secret_key_here",
-    "ExpirationMinutes": 60
-  }
+   "JWtConfig": {
+    "key": "{#################################}",
+    "issuer": "Alireza",
+    "audience": "Peaple"
+  },
 }</code></pre>
 
 <ol start="2">
