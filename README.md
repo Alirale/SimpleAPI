@@ -1,5 +1,5 @@
 <!-- Project Name - .NET 7 API with CLEAN Architecture -->
-<h1 align="center">Project Name - .NET 7 API with CLEAN Architecture</h1>
+<h1 align="center">.NET 7 simple API with CLEAN Architecture</h1>
 
 <p align="center">
   This is a simple .NET 7 API project with a CLEAN architecture that comes with essential tools and configurations to kickstart your development. It includes features such as logging, JWT authorization, Swagger, CORS setup, a basic repository folder, and more.
