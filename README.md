@@ -56,7 +56,7 @@
 
 <h3>API Documentation</h3>
 
-<p>This project comes with Swagger enabled, making it easier to test and explore the API endpoints. Access the Swagger documentation by navigating to <a href="[https://localhost:5001/swagger]">http://localhost:5000/swagger/index.html</a> after running the application.</p>
+<p>This project comes with Swagger enabled, making it easier to test and explore the API endpoints. Access the Swagger documentation by navigating to <a href="https://localhost:5001/swagger">http://localhost:5000/swagger/index.html</a> after running the application.</p>
 
 </code></pre>
 
