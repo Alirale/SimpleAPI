@@ -1,21 +1,20 @@
-﻿using Domain.Enums;
-
-namespace Domain.Response
+﻿namespace Domain.Response
 {
     public class Response<T>
     {
-        internal Response(bool succeeded, IEnumerable<ResponseMessage> errors, T result)
+        internal Response(bool succeeded, IEnumerable<string> errors, T result)
         {
             Succeeded = succeeded;
             Errors = errors.ToArray();
             Result = result;
         }
 
-        private Response(bool succeeded, IEnumerable<ResponseMessage> errors)
+        private Response(bool succeeded, IEnumerable<string> errors)
         {
             Succeeded = succeeded;
             Errors = errors.ToArray();
         }
+
         private Response(bool succeeded)
         {
             Succeeded = succeeded;
@@ -25,22 +24,27 @@ namespace Domain.Response
 
         public bool Succeeded { get; set; }
 
-        public ResponseMessage[] Errors { get; set; }
+        public string[] Errors { get; set; }
 
 
         public static Response<T> Success(T result)
         {
-            return new Response<T>(true, new ResponseMessage[] { }, result);
+            return new Response<T>(true, new string[] { }, result);
         }
 
-        public static Response<T> Failure(T result)
-        {
-            return new Response<T>(true, new ResponseMessage[] { }, result);
-        }
-
-        public static Response<T> Failure(IEnumerable<ResponseMessage> errors)
+        public static Response<T> Failure(IEnumerable<string> errors)
         {
             return new Response<T>(false, errors);
+        }
+
+        public static Response<T> Failure()
+        {
+            return new(false);
+        }
+
+        public static Response<bool> FromResult(bool result, string failMessage)
+        {
+            return result ? Response<bool>.Success(true) : Response<bool>.Failure(new List<string>() { failMessage });
         }
     }
 }

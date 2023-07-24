@@ -4,6 +4,7 @@ namespace Application.Interfaces
 {
     public interface IAuthorizationService
     {
-        public Task<string> ValidateLogin(UserLoginModel loginModel);
+        public Task<TokenResponseModel?> ValidateLogin(UserLoginModel loginModel);
+        Task<bool> RegisterNewUser(UserSignUpModel signUpModel);
     }
 }

@@ -36,24 +36,24 @@ namespace EndPoint.ServicesExtensions
 
             services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
-            if (environment.IsDevelopment())
-            {
-                services.AddSwaggerGen(
-                    options =>
+            //if (environment.IsDevelopment())
+            //{
+            services.AddSwaggerGen(
+                options =>
+                {
+                    options.OperationFilter<SwaggerDefaultValues>();
+                    options.IncludeXmlComments(Path.Combine(
+                        Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty,
+                        XmlCommentsFileName));
+                    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                     {
-                        options.OperationFilter<SwaggerDefaultValues>();
-                        options.IncludeXmlComments(Path.Combine(
-                            Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty,
-                            XmlCommentsFileName));
-                        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                        {
-                            In = ParameterLocation.Header,
-                            Description = "Please insert JWT with Bearer into field",
-                            Name = "Authorization",
-                            Type = SecuritySchemeType.ApiKey
-                        });
-                        options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                        {
+                        In = ParameterLocation.Header,
+                        Description = "Please insert JWT with Bearer into field",
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.ApiKey
+                    });
+                    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
                             {
                                 new OpenApiSecurityScheme
                                 {
@@ -65,25 +65,25 @@ namespace EndPoint.ServicesExtensions
                                 },
                                 new string[] { }
                             }
-                        });
-                    }
-                    );
-            }
+                    });
+                }
+                );
+            //}
             return services;
         }
 
-        public static IServiceCollection ConfigureSwagger(this WebApplicationBuilder builder, WebApplication webApplication,IApiVersionDescriptionProvider provider)
+        public static IServiceCollection ConfigureSwagger(this WebApplicationBuilder builder, WebApplication webApplication, IApiVersionDescriptionProvider provider)
         {
-            if (!webApplication.Environment.IsDevelopment()) return builder.Services;
+            //if (!webApplication.Environment.IsDevelopment()) return builder.Services;
             webApplication.UseSwagger();
             webApplication.UseSwaggerUI(options =>
+            {
+                foreach (var description in provider.ApiVersionDescriptions)
                 {
-                    foreach (var description in provider.ApiVersionDescriptions)
-                    {
-                        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
-                            description.GroupName.ToUpperInvariant());
-                    }
+                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                        description.GroupName.ToUpperInvariant());
                 }
+            }
             );
             return builder.Services;
         }
@@ -96,24 +96,23 @@ namespace EndPoint.ServicesExtensions
                 {
                     configurePolicy.AllowAnyOrigin()
                         .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
+                        .AllowAnyMethod();
                 });
             });
         }
 
-        public static void AddJwtAuthorization(this IServiceCollection services,IConfiguration configuration)
+        public static void AddJwtAuthorization(this IServiceCollection services, IConfiguration configuration)
         {
             var tokenSettings = configuration.GetSection("JWtConfig").Get<TokenModel>();
             if (tokenSettings == null)
                 throw new AbandonedMutexException("Token Model is NUll");
             else
                 services.AddAuthentication(options =>
-                    {
-                        options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-                        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    })
+                {
+                    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
                     .AddJwtBearer(configureOptions =>
                     {
                         configureOptions.TokenValidationParameters = new TokenValidationParameters()
@@ -122,7 +121,9 @@ namespace EndPoint.ServicesExtensions
                             ValidAudience = tokenSettings.Audience,
                             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Key)),
                             ValidateIssuerSigningKey = true,
-                            ValidateLifetime = false,
+                            ValidateLifetime = true,
+                            RequireExpirationTime = true,
+                            ClockSkew = TimeSpan.Zero
                         };
                         configureOptions.SaveToken = true;
                     });
