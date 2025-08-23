@@ -31,14 +31,14 @@
             components = new System.ComponentModel.Container();
             dgvItems = new DataGridView();
             panelTop = new Panel();
+            buttonDelete = new Button();
+            buttonEdit = new Button();
+            buttonAdd = new Button();
             lblSearch = new Label();
             txtSearch = new TextBox();
             label1 = new Label();
             comboBox1 = new ComboBox();
             btnSearch = new Button();
-            btnAdd = new Button();
-            btnEdit = new Button();
-            btnDelete = new Button();
             bindingSource1 = new BindingSource(components);
             ((System.ComponentModel.ISupportInitialize)dgvItems).BeginInit();
             panelTop.SuspendLayout();
@@ -57,30 +57,60 @@
             dgvItems.ReadOnly = true;
             dgvItems.RowHeadersVisible = false;
             dgvItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvItems.Size = new Size(1115, 540);
+            dgvItems.Size = new Size(1047, 474);
             dgvItems.TabIndex = 1;
             // 
             // panelTop
             // 
+            panelTop.Controls.Add(buttonDelete);
+            panelTop.Controls.Add(buttonEdit);
+            panelTop.Controls.Add(buttonAdd);
             panelTop.Controls.Add(lblSearch);
             panelTop.Controls.Add(txtSearch);
             panelTop.Controls.Add(label1);
             panelTop.Controls.Add(comboBox1);
             panelTop.Controls.Add(btnSearch);
-            panelTop.Controls.Add(btnAdd);
-            panelTop.Controls.Add(btnEdit);
-            panelTop.Controls.Add(btnDelete);
             panelTop.Dock = DockStyle.Top;
             panelTop.Location = new Point(0, 0);
             panelTop.Name = "panelTop";
             panelTop.Padding = new Padding(8);
-            panelTop.Size = new Size(1115, 60);
+            panelTop.Size = new Size(1047, 60);
             panelTop.TabIndex = 0;
+            // 
+            // buttonDelete
+            // 
+            buttonDelete.Location = new Point(950, 15);
+            buttonDelete.Name = "buttonDelete";
+            buttonDelete.Size = new Size(85, 26);
+            buttonDelete.TabIndex = 10;
+            buttonDelete.Text = "حذف";
+            buttonDelete.UseVisualStyleBackColor = true;
+            buttonDelete.Click += buttonDelete_Click;
+            // 
+            // buttonEdit
+            // 
+            buttonEdit.Location = new Point(859, 15);
+            buttonEdit.Name = "buttonEdit";
+            buttonEdit.Size = new Size(85, 26);
+            buttonEdit.TabIndex = 9;
+            buttonEdit.Text = "ویرایش";
+            buttonEdit.UseVisualStyleBackColor = true;
+            buttonEdit.Click += buttonEdit_Click;
+            // 
+            // buttonAdd
+            // 
+            buttonAdd.Location = new Point(768, 15);
+            buttonAdd.Name = "buttonAdd";
+            buttonAdd.Size = new Size(85, 26);
+            buttonAdd.TabIndex = 8;
+            buttonAdd.Text = "افزودن";
+            buttonAdd.UseVisualStyleBackColor = true;
+            buttonAdd.Click += buttonAdd_Click;
             // 
             // lblSearch
             // 
             lblSearch.AutoSize = true;
-            lblSearch.Location = new Point(16, 20);
+            lblSearch.Location = new Point(16, 21);
             lblSearch.Name = "lblSearch";
             lblSearch.Size = new Size(67, 15);
             lblSearch.TabIndex = 0;
@@ -88,7 +118,7 @@
             // 
             // txtSearch
             // 
-            txtSearch.Location = new Point(89, 16);
+            txtSearch.Location = new Point(89, 17);
             txtSearch.Name = "txtSearch";
             txtSearch.PlaceholderText = "نام محصول…";
             txtSearch.Size = new Size(200, 23);
@@ -97,7 +127,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(300, 20);
+            label1.Location = new Point(300, 21);
             label1.Name = "label1";
             label1.Size = new Size(62, 15);
             label1.TabIndex = 2;
@@ -107,7 +137,7 @@
             // 
             comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox1.Items.AddRange(new object[] { "همه", "پوشاک", "لوازم الکترونیکی", "مواد غذایی", "مبلمان", "لوازم‌التحریر", "ابزارها", "اسباب‌بازی‌ها", "کتاب‌ها", "ورزش", "زیبایی", "دارو", "لوازم جانبی", "وسایل نقلیه", "لوازم خانگی" });
-            comboBox1.Location = new Point(368, 16);
+            comboBox1.Location = new Point(368, 17);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(160, 23);
             comboBox1.TabIndex = 3;
@@ -122,41 +152,11 @@
             btnSearch.UseVisualStyleBackColor = true;
             btnSearch.Click += btnSearch_Click;
             // 
-            // btnAdd
-            // 
-            btnAdd.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnAdd.Location = new Point(1115, 15);
-            btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(70, 26);
-            btnAdd.TabIndex = 5;
-            btnAdd.Text = "جدید";
-            btnAdd.UseVisualStyleBackColor = true;
-            // 
-            // btnEdit
-            // 
-            btnEdit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnEdit.Location = new Point(1115, 15);
-            btnEdit.Name = "btnEdit";
-            btnEdit.Size = new Size(70, 26);
-            btnEdit.TabIndex = 6;
-            btnEdit.Text = "ویرایش";
-            btnEdit.UseVisualStyleBackColor = true;
-            // 
-            // btnDelete
-            // 
-            btnDelete.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnDelete.Location = new Point(1115, 15);
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(70, 26);
-            btnDelete.TabIndex = 7;
-            btnDelete.Text = "حذف";
-            btnDelete.UseVisualStyleBackColor = true;
-            // 
             // ItemsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1115, 600);
+            ClientSize = new Size(1047, 534);
             Controls.Add(dgvItems);
             Controls.Add(panelTop);
             Name = "ItemsForm";
@@ -174,15 +174,14 @@
 
         private DataGridView dgvItems;
         private Panel panelTop;
-        private Button button1;
+        private Button buttonEdit;
         private Label lblSearch;
         private TextBox txtSearch;
-        private Button btnDelete;
-        private Button btnEdit;
-        private Button btnAdd;
         private ComboBox comboBox1;
         private BindingSource bindingSource1;
         private Label label1;
         private Button btnSearch;
+        private Button buttonAdd;
+        private Button buttonDelete;
     }
 }

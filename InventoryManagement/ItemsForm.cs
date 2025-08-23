@@ -14,15 +14,28 @@ namespace InventoryManagement
         {
             InitializeComponent();
             dgvItems.AutoGenerateColumns = false;
+            dgvItems.RowHeadersVisible = false;
+            dgvItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvItems.Columns.Clear();
 
+            dgvItems.Columns.Insert(0, new DataGridViewCheckBoxColumn
+            {
+                Name = "colSelect",
+                HeaderText = "انتخاب",
+                Width = 60,
+                FillWeight = 30
+            });
+
+            dgvItems.RowHeadersVisible = false;
 
             dgvItems.Columns.Add(new DataGridViewTextBoxColumn
             {
+                Name = "colId",
                 DataPropertyName = "Id",
                 HeaderText = "شناسه",
                 Width = 70,
-                FillWeight = 10
+                ReadOnly = true,
+                FillWeight = 30
             });
 
 
@@ -64,7 +77,39 @@ namespace InventoryManagement
                 Width = 140
             });
 
-            _bs.DataSource = _view;  
+            dgvItems.CurrentCellDirtyStateChanged += (s, e) =>
+            {
+                if (dgvItems.IsCurrentCellDirty)
+                    dgvItems.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            };
+
+            dgvItems.CellContentClick += (s, e) =>
+            {
+                if (e.RowIndex < 0) return;
+                if (dgvItems.Columns[e.ColumnIndex].Name != "colSelect") return;
+
+                foreach (DataGridViewRow r in dgvItems.Rows)
+                    if (r.Index != e.RowIndex)
+                        r.Cells["colSelect"].Value = false;
+
+                var cell = (DataGridViewCheckBoxCell)dgvItems.Rows[e.RowIndex].Cells["colSelect"];
+                bool current = cell.Value is bool b && b;
+                cell.Value = !current;
+            };
+
+            // کلیک روی هر ستون دیگر → همان ردیف تیک بخورد
+            dgvItems.CellClick += (s, e) =>
+            {
+                if (e.RowIndex < 0) return;
+                if (dgvItems.Columns[e.ColumnIndex].Name == "colSelect") return;
+
+                foreach (DataGridViewRow r in dgvItems.Rows)
+                    r.Cells["colSelect"].Value = false;
+
+                dgvItems.Rows[e.RowIndex].Cells["colSelect"].Value = true;
+            };
+
+            _bs.DataSource = _view;
             dgvItems.DataSource = _bs;
             dgvItems.CellFormatting += dgvEmployees_CellFormatting;
         }
@@ -92,6 +137,7 @@ namespace InventoryManagement
                 new Item { Id = 18, Name = "کِرِم مرطوب‌کننده",     Category = CategoryType.Beauty,          Description = "پوست خشک",                 UnitPrice = 210_000m },
                 new Item { Id = 19, Name = "تب‌سنج دیجیتال",        Category = CategoryType.Medicine,        Description = "غیری پزشکی (OTC)",        UnitPrice = 290_000m }
             };
+
             _view.Clear();
             foreach (var it in sampleItems) _view.Add(it);
 
@@ -120,6 +166,63 @@ namespace InventoryManagement
 
         }
 
+        private void buttonAdd_Click(object sender, EventArgs e)
+        {
 
+        }
+
+        private void buttonEdit_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            var selected = GetSelectedItem();
+            if (selected == null)
+            {
+                MessageBox.Show("هیچ ردیفی انتخاب نشده.", "حذف", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (MessageBox.Show($"«{selected.Name}» حذف شود؟", "تأیید حذف",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+
+            _view.Remove(selected);
+        }
+        private Item? GetSelectedItem()
+        {
+            foreach (DataGridViewRow r in dgvItems.Rows)
+            {
+                var c = r.Cells["colSelect"];
+                bool isChecked = false;
+                if (c is DataGridViewCheckBoxCell cb)
+                    isChecked = Convert.ToBoolean(cb.EditedFormattedValue ?? cb.Value ?? false);
+
+                if (isChecked)
+                    return r.DataBoundItem as Item;
+            }
+            return dgvItems.CurrentRow?.DataBoundItem as Item;
+        }
+
+        private static string ToFa(CategoryType ct) => ct switch
+        {
+            CategoryType.Clothes => "پوشاک",
+            CategoryType.Electronics => "لوازم الکترونیکی",
+            CategoryType.Food => "مواد غذایی",
+            CategoryType.Furniture => "مبلمان",
+            CategoryType.Stationery => "لوازم‌التحریر",
+            CategoryType.Tools => "ابزارها",
+            CategoryType.Toys => "اسباب‌بازی‌ها",
+            CategoryType.Books => "کتاب‌ها",
+            CategoryType.Sports => "ورزش",
+            CategoryType.Beauty => "زیبایی",
+            CategoryType.Medicine => "دارو",
+            CategoryType.Accessories => "لوازم جانبی",
+            CategoryType.Vehicles => "وسایل نقلیه",
+            CategoryType.HomeAppliances => "لوازم خانگی",
+            CategoryType.Others => "سایر موارد",
+            _ => ct.ToString()
+        };
     }
 }
