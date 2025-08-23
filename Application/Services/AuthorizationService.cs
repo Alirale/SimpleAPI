@@ -58,7 +58,7 @@ namespace Application.Services
             var key = _configuration["JWtConfig:Key"];
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-
+            
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWtConfig:issuer"],
                 audience: _configuration["JWtConfig:audience"],

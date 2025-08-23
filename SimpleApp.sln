@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Core\Domain.cspro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{070B7ECF-DA2E-4925-80ED-537C3C69EF9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryManagement", "InventoryManagement\InventoryManagement.csproj", "{EEDC82A2-74EB-4F1E-8A2C-45BC2E2EC172}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{070B7ECF-DA2E-4925-80ED-537C3C69EF9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{070B7ECF-DA2E-4925-80ED-537C3C69EF9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{070B7ECF-DA2E-4925-80ED-537C3C69EF9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEDC82A2-74EB-4F1E-8A2C-45BC2E2EC172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEDC82A2-74EB-4F1E-8A2C-45BC2E2EC172}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEDC82A2-74EB-4F1E-8A2C-45BC2E2EC172}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEDC82A2-74EB-4F1E-8A2C-45BC2E2EC172}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +56,7 @@ Global
 		{9DE052CC-64B9-4AB6-BD42-26CDFC1B3424} = {C3EF86F8-8993-4D7C-BD99-61BB34B3EB07}
 		{A432FE4F-1DE9-40F1-9A41-11F11A584614} = {5B3C7384-C1E8-47B7-9C8D-23B8F3A3A137}
 		{070B7ECF-DA2E-4925-80ED-537C3C69EF9B} = {BCC9B897-4B25-4C3B-8F0F-02D64B45C5B3}
+		{EEDC82A2-74EB-4F1E-8A2C-45BC2E2EC172} = {A7CCA54C-903E-4F55-851B-B88D5B45D111}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EA893D16-9374-4315-A560-E7BD192B9A59}
