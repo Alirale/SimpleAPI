@@ -1,105 +1,148 @@
 ﻿namespace InventoryManagement
 {
-    partial class LoginForm
+    partial class InventoryManagement
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
+        private Button btnLogin;
+        private TextBox txtboxPassword;
+        private TextBox txtboxUserName;
+        private Label lblUserName;
+        private Label lblPassword;
+        private Label lblTitle;
+        private Label lblSubtitle;
+        private Panel panelHeader;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
-            {
                 components.Dispose();
-            }
             base.Dispose(disposing);
         }
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             btnLogin = new Button();
             txtboxPassword = new TextBox();
             txtboxUserName = new TextBox();
-            label1 = new Label();
-            label2 = new Label();
+            lblUserName = new Label();
+            lblPassword = new Label();
+            lblTitle = new Label();
+            lblSubtitle = new Label();
+            panelHeader = new Panel();
+            panelHeader.SuspendLayout();
             SuspendLayout();
             // 
             // btnLogin
             // 
-            btnLogin.Location = new Point(185, 168);
+            btnLogin.BackColor = Color.MediumSeaGreen;
+            btnLogin.FlatStyle = FlatStyle.Flat;
+            btnLogin.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnLogin.ForeColor = Color.White;
+            btnLogin.Location = new Point(150, 200);
             btnLogin.Name = "btnLogin";
-            btnLogin.Size = new Size(75, 23);
-            btnLogin.TabIndex = 0;
-            btnLogin.Text = "Login";
-            btnLogin.UseVisualStyleBackColor = true;
+            btnLogin.Size = new Size(200, 40);
+            btnLogin.TabIndex = 5;
+            btnLogin.Text = "ورود";
+            btnLogin.UseVisualStyleBackColor = false;
             btnLogin.Click += btnLogin_Click;
             // 
             // txtboxPassword
             // 
-            txtboxPassword.Location = new Point(136, 123);
+            txtboxPassword.Font = new Font("Segoe UI", 10F);
+            txtboxPassword.Location = new Point(150, 147);
             txtboxPassword.Name = "txtboxPassword";
-            txtboxPassword.Size = new Size(195, 23);
-            txtboxPassword.TabIndex = 1;
+            txtboxPassword.PasswordChar = '●';
+            txtboxPassword.Size = new Size(200, 25);
+            txtboxPassword.TabIndex = 4;
             // 
             // txtboxUserName
             // 
-            txtboxUserName.Location = new Point(136, 83);
+            txtboxUserName.Font = new Font("Segoe UI", 10F);
+            txtboxUserName.Location = new Point(150, 107);
             txtboxUserName.Name = "txtboxUserName";
-            txtboxUserName.Size = new Size(195, 23);
+            txtboxUserName.Size = new Size(200, 25);
             txtboxUserName.TabIndex = 2;
             // 
-            // label1
+            // lblUserName
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(62, 86);
-            label1.Name = "label1";
-            label1.Size = new Size(68, 15);
-            label1.TabIndex = 3;
-            label1.Text = "UserName :";
+            lblUserName.AutoSize = true;
+            lblUserName.Font = new Font("Segoe UI", 10F);
+            lblUserName.Location = new Point(60, 110);
+            lblUserName.Name = "lblUserName";
+            lblUserName.Size = new Size(71, 19);
+            lblUserName.TabIndex = 1;
+            lblUserName.Text = "نام کاربری:";
             // 
-            // label2
+            // lblPassword
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(67, 131);
-            label2.Name = "label2";
-            label2.Size = new Size(63, 15);
-            label2.TabIndex = 4;
-            label2.Text = "Password :";
+            lblPassword.AutoSize = true;
+            lblPassword.Font = new Font("Segoe UI", 10F);
+            lblPassword.Location = new Point(60, 150);
+            lblPassword.Name = "lblPassword";
+            lblPassword.Size = new Size(61, 19);
+            lblPassword.TabIndex = 3;
+            lblPassword.Text = "رمز عبور:";
             // 
-            // LoginForm
+            // lblTitle
+            // 
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            lblTitle.ForeColor = Color.White;
+            lblTitle.Location = new Point(20, 10);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(258, 30);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "Inventory Management";
+            // 
+            // lblSubtitle
+            // 
+            lblSubtitle.AutoSize = true;
+            lblSubtitle.Font = new Font("Segoe UI", 10F);
+            lblSubtitle.ForeColor = Color.WhiteSmoke;
+            lblSubtitle.Location = new Point(22, 40);
+            lblSubtitle.Name = "lblSubtitle";
+            lblSubtitle.Size = new Size(245, 19);
+            lblSubtitle.TabIndex = 1;
+            lblSubtitle.Text = "نرم افزار جامع مدیریت انبار داری نسخه 1";
+            // 
+            // panelHeader
+            // 
+            panelHeader.BackColor = Color.SteelBlue;
+            panelHeader.Controls.Add(lblTitle);
+            panelHeader.Controls.Add(lblSubtitle);
+            panelHeader.Dock = DockStyle.Top;
+            panelHeader.Location = new Point(0, 0);
+            panelHeader.Name = "panelHeader";
+            panelHeader.Size = new Size(461, 70);
+            panelHeader.TabIndex = 0;
+            // 
+            // InventoryManagement
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(421, 296);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            BackColor = Color.WhiteSmoke;
+            ClientSize = new Size(461, 317);
+            Controls.Add(panelHeader);
+            Controls.Add(lblUserName);
             Controls.Add(txtboxUserName);
+            Controls.Add(lblPassword);
             Controls.Add(txtboxPassword);
             Controls.Add(btnLogin);
-            Name = "LoginForm";
-            Text = "LoginForm";
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "InventoryManagement";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "ورود به سیستم مدیریت انبار";
             Load += LoginForm_Load;
+            panelHeader.ResumeLayout(false);
+            panelHeader.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-
-        private Button btnLogin;
-        private TextBox txtboxPassword;
-        private TextBox txtboxUserName;
-        private Label label1;
-        private Label label2;
     }
 }

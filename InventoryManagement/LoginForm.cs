@@ -3,11 +3,11 @@ using System.Text.Json;
 
 namespace InventoryManagement
 {
-    public partial class LoginForm : Form
+    public partial class InventoryManagement : Form
     {
         private readonly HttpClient _http = new HttpClient();
 
-        public LoginForm()
+        public InventoryManagement()
         {
             InitializeComponent();
         }

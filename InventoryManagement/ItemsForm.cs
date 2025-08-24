@@ -11,12 +11,14 @@ namespace InventoryManagement
     {
         private readonly BindingList<ItemView> _view = new();
         private readonly BindingSource _bs = new();
+        
 
         public ItemsForm()
         {
             InitializeComponent();
             dgvItems.AutoGenerateColumns = false;
             dgvItems.RowHeadersVisible = false;
+            dgvItems.AllowUserToAddRows = false;
             dgvItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvItems.Columns.Clear();
 
@@ -111,36 +113,48 @@ namespace InventoryManagement
                 dgvItems.Rows[e.RowIndex].Cells["colSelect"].Value = true;
             };
 
+            if (dgvItems.Rows.Count > 0)
+            {
+                dgvItems.ClearSelection();
+                dgvItems.Rows[0].Selected = true;
+            }
+
             _bs.DataSource = _view;
             dgvItems.DataSource = _bs;
-            dgvItems.CellFormatting += dgvEmployees_CellFormatting;
+            dgvItems.CellFormatting += dgvItems_CellFormatting;
         }
+
         private async void ItemsForm_Load(object sender, EventArgs e)
         {
             try
             {
                 var items = await LoadItemsFromApiAsync();
-                _view.Clear();
 
+                foreach (CategoryType ct in Enum.GetValues(typeof(CategoryType)))
+                {
+                    comboBox1.Items.Add(ToFa(ct));
+                }
+                comboBox1.SelectedIndex = 0;
+
+                _view.Clear();
                 foreach (var it in items)
                 {
-                    _view.Add(new ItemView
+                    _view.Add(new ItemView()
                     {
                         Id = it.Id,
-                        Name = it.Name,
+                        Name = it.Name ?? "",
                         Category = ToFa(it.Category),
-                        Description = it.Description,
+                        Description = string.IsNullOrWhiteSpace(it.Description) ? "-" : it.Description,
                         UnitPrice = it.UnitPrice,
                         Quantity = it.Quantity,
-                        CreatedAt = it.CreatedAt
+                        CreatedAt = it.CreatedAt == default ? DateTime.Now : it.CreatedAt
                     });
                 }
-
-                _bs.ResetBindings(false);
+                //dgvItems.Refresh();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "خطا");
+                MessageBox.Show($"خطا در بارگذاری داده‌ها: {ex.Message}", "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -148,11 +162,9 @@ namespace InventoryManagement
         {
             try
             {
-                var req = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/Items/v1/Search");
-
+                using var req = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/Items/v1/Search");
                 req.Headers.Accept.Clear();
                 req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
 
                 using var resp = await _http.SendAsync(req);
                 resp.EnsureSuccessStatusCode();
@@ -161,10 +173,10 @@ namespace InventoryManagement
                 var data = JsonSerializer.Deserialize<List<ApiItemDto>>(json, _jsonOptions) ?? new();
                 return data;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
-                throw;
+                MessageBox.Show($"خطا در ارتباط با سرور: {ex.Message}", "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return new List<ApiItemDto>();
             }
         }
 
@@ -173,7 +185,7 @@ namespace InventoryManagement
             try
             {
                 var name = txtSearch.Text?.Trim();
-                var category = comboBox1.SelectedItem is not null? FromFa(comboBox1.SelectedItem?.ToString()).ToString() : null;
+                var category = comboBox1.SelectedItem is not null ? FromFa(comboBox1.SelectedItem?.ToString()).ToString() : null;
 
                 var items = await SearchItemsFromApiAsync(name, category);
 
@@ -191,7 +203,7 @@ namespace InventoryManagement
                         CreatedAt = it.CreatedAt
                     });
                 }
-                _bs.ResetBindings(false);
+                dgvItems.Refresh();
             }
             catch (Exception ex)
             {
@@ -257,7 +269,7 @@ namespace InventoryManagement
                         CreatedAt = it.CreatedAt
                     });
                 }
-                _bs.ResetBindings(false);
+                //dgvItems.Refresh();
             }
         }
 
@@ -288,12 +300,12 @@ namespace InventoryManagement
                         CreatedAt = it.CreatedAt
                     });
                 }
-                _bs.ResetBindings(false);
+                //dgvItems.Refresh();
             }
         }
 
         private async void buttonDelete_Click(object sender, EventArgs e)
-        { 
+        {
             var selected = GetSelectedItem();
             if (selected == null)
             {
@@ -330,7 +342,7 @@ namespace InventoryManagement
                         CreatedAt = it.CreatedAt
                     });
                 }
-                _bs.ResetBindings(false);
+                //dgvItems.Refresh();
             }
             catch (Exception ex)
             {
@@ -352,6 +364,17 @@ namespace InventoryManagement
             return dgvItems.CurrentRow?.DataBoundItem as ItemView;
         }
 
+        private void dgvItems_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (dgvItems.Columns[e.ColumnIndex].DataPropertyName == "Category")
+            {
+                if (e.Value is CategoryType ct)
+                {
+                    e.Value = ToFa(ct);
+                    e.FormattingApplied = true;
+                }
+            }
+        }
         public static string ToFa(CategoryType ct) => ct switch
         {
             CategoryType.Clothes => "پوشاک",

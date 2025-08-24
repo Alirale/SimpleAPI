@@ -2,186 +2,208 @@
 {
     partial class ItemsForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
+        private DataGridView dgvItems;
+        private Panel panelTop;
+        private Button buttonDelete;
+        private Button buttonEdit;
+        private Button buttonAdd;
+        private Label lblSearch;
+        private TextBox txtSearch;
+        private Label lblCategory;
+        private ComboBox comboBox1;
+        private Button btnSearch;
+        private Panel panelHeader;
+        private Label lblTitle;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
-            {
                 components.Dispose();
-            }
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             dgvItems = new DataGridView();
             panelTop = new Panel();
-            buttonDelete = new Button();
-            buttonEdit = new Button();
-            buttonAdd = new Button();
             lblSearch = new Label();
             txtSearch = new TextBox();
-            label1 = new Label();
+            lblCategory = new Label();
             comboBox1 = new ComboBox();
             btnSearch = new Button();
-            bindingSource1 = new BindingSource(components);
+            buttonAdd = new Button();
+            buttonEdit = new Button();
+            buttonDelete = new Button();
+            panelHeader = new Panel();
+            lblTitle = new Label();
             ((System.ComponentModel.ISupportInitialize)dgvItems).BeginInit();
             panelTop.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
+            panelHeader.SuspendLayout();
             SuspendLayout();
             // 
             // dgvItems
             // 
-            dgvItems.AllowUserToAddRows = false;
-            dgvItems.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle1.BackColor = Color.WhiteSmoke;
+            dgvItems.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dgvItems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvItems.BackgroundColor = Color.White;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = Color.SteelBlue;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle2.ForeColor = Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgvItems.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dgvItems.Dock = DockStyle.Fill;
-            dgvItems.Location = new Point(0, 60);
-            dgvItems.MultiSelect = false;
+            dgvItems.EnableHeadersVisualStyles = false;
+            dgvItems.Location = new Point(0, 115);
             dgvItems.Name = "dgvItems";
             dgvItems.ReadOnly = true;
-            dgvItems.RowHeadersVisible = false;
             dgvItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvItems.Size = new Size(1047, 474);
-            dgvItems.TabIndex = 1;
+            dgvItems.Size = new Size(1103, 485);
+            dgvItems.TabIndex = 0;
             // 
             // panelTop
             // 
-            panelTop.Controls.Add(buttonDelete);
-            panelTop.Controls.Add(buttonEdit);
-            panelTop.Controls.Add(buttonAdd);
+            panelTop.BackColor = Color.WhiteSmoke;
             panelTop.Controls.Add(lblSearch);
             panelTop.Controls.Add(txtSearch);
-            panelTop.Controls.Add(label1);
+            panelTop.Controls.Add(lblCategory);
             panelTop.Controls.Add(comboBox1);
             panelTop.Controls.Add(btnSearch);
+            panelTop.Controls.Add(buttonAdd);
+            panelTop.Controls.Add(buttonEdit);
+            panelTop.Controls.Add(buttonDelete);
             panelTop.Dock = DockStyle.Top;
-            panelTop.Location = new Point(0, 0);
+            panelTop.Location = new Point(0, 60);
             panelTop.Name = "panelTop";
             panelTop.Padding = new Padding(8);
-            panelTop.Size = new Size(1047, 60);
-            panelTop.TabIndex = 0;
-            // 
-            // buttonDelete
-            // 
-            buttonDelete.Location = new Point(950, 15);
-            buttonDelete.Name = "buttonDelete";
-            buttonDelete.Size = new Size(85, 26);
-            buttonDelete.TabIndex = 10;
-            buttonDelete.Text = "حذف";
-            buttonDelete.UseVisualStyleBackColor = true;
-            buttonDelete.Click += buttonDelete_Click;
-            // 
-            // buttonEdit
-            // 
-            buttonEdit.Location = new Point(859, 15);
-            buttonEdit.Name = "buttonEdit";
-            buttonEdit.Size = new Size(85, 26);
-            buttonEdit.TabIndex = 9;
-            buttonEdit.Text = "ویرایش";
-            buttonEdit.UseVisualStyleBackColor = true;
-            buttonEdit.Click += buttonEdit_Click;
-            // 
-            // buttonAdd
-            // 
-            buttonAdd.Location = new Point(768, 15);
-            buttonAdd.Name = "buttonAdd";
-            buttonAdd.Size = new Size(85, 26);
-            buttonAdd.TabIndex = 8;
-            buttonAdd.Text = "افزودن";
-            buttonAdd.UseVisualStyleBackColor = true;
-            buttonAdd.Click += buttonAdd_Click;
+            panelTop.Size = new Size(1103, 55);
+            panelTop.TabIndex = 1;
             // 
             // lblSearch
             // 
-            lblSearch.AutoSize = true;
-            lblSearch.Location = new Point(16, 21);
+            lblSearch.Location = new Point(15, 20);
             lblSearch.Name = "lblSearch";
-            lblSearch.Size = new Size(67, 15);
+            lblSearch.Size = new Size(69, 23);
             lblSearch.TabIndex = 0;
             lblSearch.Text = "نام محصول:";
             // 
             // txtSearch
             // 
-            txtSearch.Location = new Point(89, 17);
+            txtSearch.Location = new Point(90, 17);
             txtSearch.Name = "txtSearch";
-            txtSearch.PlaceholderText = "نام محصول…";
-            txtSearch.Size = new Size(200, 23);
+            txtSearch.Size = new Size(160, 23);
             txtSearch.TabIndex = 1;
             // 
-            // label1
+            // lblCategory
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(300, 21);
-            label1.Name = "label1";
-            label1.Size = new Size(62, 15);
-            label1.TabIndex = 2;
-            label1.Text = "دسته بندی:";
+            lblCategory.Location = new Point(325, 20);
+            lblCategory.Name = "lblCategory";
+            lblCategory.Size = new Size(79, 23);
+            lblCategory.TabIndex = 2;
+            lblCategory.Text = "دسته بندی:";
             // 
             // comboBox1
             // 
-            comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBox1.Items.AddRange(new object[] { "پوشاک", "لوازم الکترونیکی", "مواد غذایی", "مبلمان", "لوازم‌التحریر", "ابزارها", "اسباب‌بازی‌ها", "کتاب‌ها", "ورزش", "زیبایی", "دارو", "لوازم جانبی", "وسایل نقلیه", "لوازم خانگی" });
-            comboBox1.Location = new Point(368, 17);
+            comboBox1.Location = new Point(410, 17);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(160, 23);
             comboBox1.TabIndex = 3;
             // 
             // btnSearch
             // 
-            btnSearch.Location = new Point(540, 15);
+            btnSearch.BackColor = Color.SteelBlue;
+            btnSearch.FlatStyle = FlatStyle.Flat;
+            btnSearch.ForeColor = Color.White;
+            btnSearch.Location = new Point(580, 15);
             btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(85, 26);
+            btnSearch.Size = new Size(90, 28);
             btnSearch.TabIndex = 4;
-            btnSearch.Text = "جست‌وجو";
-            btnSearch.UseVisualStyleBackColor = true;
+            btnSearch.Text = "🔍 جستجو";
+            btnSearch.UseVisualStyleBackColor = false;
             btnSearch.Click += btnSearch_Click;
+            // 
+            // buttonAdd
+            // 
+            buttonAdd.BackColor = Color.MediumSeaGreen;
+            buttonAdd.FlatStyle = FlatStyle.Flat;
+            buttonAdd.ForeColor = Color.White;
+            buttonAdd.Location = new Point(779, 16);
+            buttonAdd.Name = "buttonAdd";
+            buttonAdd.Size = new Size(85, 28);
+            buttonAdd.TabIndex = 5;
+            buttonAdd.Text = "➕ افزودن";
+            buttonAdd.UseVisualStyleBackColor = false;
+            buttonAdd.Click += buttonAdd_Click;
+            // 
+            // buttonEdit
+            // 
+            buttonEdit.BackColor = Color.Goldenrod;
+            buttonEdit.FlatStyle = FlatStyle.Flat;
+            buttonEdit.ForeColor = Color.White;
+            buttonEdit.Location = new Point(869, 16);
+            buttonEdit.Name = "buttonEdit";
+            buttonEdit.Size = new Size(85, 28);
+            buttonEdit.TabIndex = 6;
+            buttonEdit.Text = "✏️ ویرایش";
+            buttonEdit.UseVisualStyleBackColor = false;
+            buttonEdit.Click += buttonEdit_Click;
+            // 
+            // buttonDelete
+            // 
+            buttonDelete.BackColor = Color.Firebrick;
+            buttonDelete.FlatStyle = FlatStyle.Flat;
+            buttonDelete.ForeColor = Color.White;
+            buttonDelete.Location = new Point(959, 16);
+            buttonDelete.Name = "buttonDelete";
+            buttonDelete.Size = new Size(85, 28);
+            buttonDelete.TabIndex = 7;
+            buttonDelete.Text = "🗑️ حذف";
+            buttonDelete.UseVisualStyleBackColor = false;
+            buttonDelete.Click += buttonDelete_Click;
+            // 
+            // panelHeader
+            // 
+            panelHeader.BackColor = Color.SteelBlue;
+            panelHeader.Controls.Add(lblTitle);
+            panelHeader.Dock = DockStyle.Top;
+            panelHeader.Location = new Point(0, 0);
+            panelHeader.Name = "panelHeader";
+            panelHeader.Size = new Size(1103, 60);
+            panelHeader.TabIndex = 2;
+            // 
+            // lblTitle
+            // 
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblTitle.ForeColor = Color.White;
+            lblTitle.Location = new Point(20, 15);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(121, 25);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "مدیریت کالاها";
             // 
             // ItemsForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1047, 534);
+            ClientSize = new Size(1103, 600);
             Controls.Add(dgvItems);
             Controls.Add(panelTop);
+            Controls.Add(panelHeader);
             Name = "ItemsForm";
-            StartPosition = FormStartPosition.CenterParent;
-            Text = "ItemsForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "مدیریت کالاها";
             Load += ItemsForm_Load;
             ((System.ComponentModel.ISupportInitialize)dgvItems).EndInit();
             panelTop.ResumeLayout(false);
             panelTop.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
+            panelHeader.ResumeLayout(false);
+            panelHeader.PerformLayout();
             ResumeLayout(false);
         }
-
-        #endregion
-
-        private DataGridView dgvItems;
-        private Panel panelTop;
-        private Button buttonEdit;
-        private Label lblSearch;
-        private TextBox txtSearch;
-        private ComboBox comboBox1;
-        private BindingSource bindingSource1;
-        private Label label1;
-        private Button btnSearch;
-        private Button buttonAdd;
-        private Button buttonDelete;
     }
 }
