@@ -30,3 +30,22 @@ public class ItemView
     public decimal UnitPrice { get; set; }
     public int Quantity { get; set; }
 }
+
+public class LoginRequest
+{
+    public string UserName { get; set; } = "";
+    public string Password { get; set; } = "";
+}
+
+public class LoginResponse
+{
+    public LoginResult? Result { get; set; }
+    public bool Succeeded { get; set; }
+    public List<string>? Errors { get; set; }
+}
+
+public class LoginResult
+{
+    public string Token { get; set; } = "";
+    public DateTime ValidUntil { get; set; }
+}
