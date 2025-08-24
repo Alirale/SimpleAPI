@@ -10,3 +10,23 @@ public class ApiItemDto
     public decimal UnitPrice { get; set; }
     public DateTime CreatedAt { get; set; }
 }
+
+public class CreateItemRequest
+{
+    public string Name { get; set; } = "";
+    public string Category { get; set; } = "";
+    public string? Description { get; set; }
+    public decimal UnitPrice { get; set; }
+    public int Quantity { get; set; }
+}
+
+public class ItemView
+{
+    public int Id { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public string Name { get; set; }
+    public string Category { get; set; }
+    public string? Description { get; set; }
+    public decimal UnitPrice { get; set; }
+    public int Quantity { get; set; }
+}

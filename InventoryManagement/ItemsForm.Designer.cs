@@ -136,7 +136,7 @@
             // comboBox1
             // 
             comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBox1.Items.AddRange(new object[] { "همه", "پوشاک", "لوازم الکترونیکی", "مواد غذایی", "مبلمان", "لوازم‌التحریر", "ابزارها", "اسباب‌بازی‌ها", "کتاب‌ها", "ورزش", "زیبایی", "دارو", "لوازم جانبی", "وسایل نقلیه", "لوازم خانگی" });
+            comboBox1.Items.AddRange(new object[] { "پوشاک", "لوازم الکترونیکی", "مواد غذایی", "مبلمان", "لوازم‌التحریر", "ابزارها", "اسباب‌بازی‌ها", "کتاب‌ها", "ورزش", "زیبایی", "دارو", "لوازم جانبی", "وسایل نقلیه", "لوازم خانگی" });
             comboBox1.Location = new Point(368, 17);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(160, 23);

@@ -4,13 +4,12 @@ using System.ComponentModel;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Xml.Linq;
 
 namespace InventoryManagement
 {
     public partial class ItemsForm : Form
     {
-        private readonly BindingList<Item> _view = new();
+        private readonly BindingList<ItemView> _view = new();
         private readonly BindingSource _bs = new();
 
         public ItemsForm()
@@ -96,7 +95,7 @@ namespace InventoryManagement
                         r.Cells["colSelect"].Value = false;
 
                 var cell = (DataGridViewCheckBoxCell)dgvItems.Rows[e.RowIndex].Cells["colSelect"];
-                bool current = cell.Value is bool b && b;
+                var current = cell.Value is true;
                 cell.Value = !current;
             };
 
@@ -125,11 +124,11 @@ namespace InventoryManagement
 
                 foreach (var it in items)
                 {
-                    _view.Add(new Item
+                    _view.Add(new ItemView
                     {
                         Id = it.Id,
                         Name = it.Name,
-                        Category = it.Category,
+                        Category = ToFa(it.Category),
                         Description = it.Description,
                         UnitPrice = it.UnitPrice,
                         Quantity = it.Quantity,
@@ -174,18 +173,18 @@ namespace InventoryManagement
             try
             {
                 var name = txtSearch.Text?.Trim();
-                var category = FromFa(comboBox1.SelectedItem?.ToString()).ToString();
+                var category = comboBox1.SelectedItem is not null? FromFa(comboBox1.SelectedItem?.ToString()).ToString() : null;
 
                 var items = await SearchItemsFromApiAsync(name, category);
 
                 _view.Clear();
                 foreach (var it in items)
                 {
-                    _view.Add(new Item
+                    _view.Add(new ItemView
                     {
                         Id = it.Id,
                         Name = it.Name,
-                        Category = it.Category,
+                        Category = ToFa(it.Category),
                         Description = it.Description,
                         UnitPrice = it.UnitPrice,
                         Quantity = it.Quantity,
@@ -198,6 +197,7 @@ namespace InventoryManagement
             {
                 MessageBox.Show(ex.Message, "خطا در جستجو");
             }
+            comboBox1.SelectedItem = null;
         }
 
         private async Task<List<ApiItemDto>> SearchItemsFromApiAsync(string? name, string? category)
@@ -237,23 +237,63 @@ namespace InventoryManagement
             }
         }
 
-        private void panelTop_Paint(object sender, PaintEventArgs e)
+        private async void buttonAdd_Click(object sender, EventArgs e)
         {
-
+            using var addForm = new AddItemForm(_http);
+            if (addForm.ShowDialog(this) == DialogResult.OK)
+            {
+                var items = await LoadItemsFromApiAsync();
+                _view.Clear();
+                foreach (var it in items)
+                {
+                    _view.Add(new ItemView
+                    {
+                        Id = it.Id,
+                        Name = it.Name,
+                        Category = ToFa(it.Category),
+                        Description = it.Description,
+                        UnitPrice = it.UnitPrice,
+                        Quantity = it.Quantity,
+                        CreatedAt = it.CreatedAt
+                    });
+                }
+                _bs.ResetBindings(false);
+            }
         }
 
-        private void buttonAdd_Click(object sender, EventArgs e)
+        private async void buttonEdit_Click(object sender, EventArgs e)
         {
+            var selected = GetSelectedItem();
+            if (selected == null)
+            {
+                MessageBox.Show("هیچ ردیفی انتخاب نشده.", "ویرایش", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
+            using var editForm = new EditForm(_http, selected);
+            if (editForm.ShowDialog(this) == DialogResult.OK)
+            {
+                var items = await LoadItemsFromApiAsync();
+                _view.Clear();
+                foreach (var it in items)
+                {
+                    _view.Add(new ItemView
+                    {
+                        Id = it.Id,
+                        Name = it.Name,
+                        Category = ToFa(it.Category),
+                        Description = it.Description,
+                        UnitPrice = it.UnitPrice,
+                        Quantity = it.Quantity,
+                        CreatedAt = it.CreatedAt
+                    });
+                }
+                _bs.ResetBindings(false);
+            }
         }
 
-        private void buttonEdit_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void buttonDelete_Click(object sender, EventArgs e)
-        {
+        private async void buttonDelete_Click(object sender, EventArgs e)
+        { 
             var selected = GetSelectedItem();
             if (selected == null)
             {
@@ -262,11 +302,42 @@ namespace InventoryManagement
             }
 
             if (MessageBox.Show($"«{selected.Name}» حذف شود؟", "تأیید حذف",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            {
+                return;
+            }
 
-            _view.Remove(selected);
+            try
+            {
+                var url = $"http://localhost:5000/Items/v1/Delete?id={selected.Id}";
+                using var resp = await _http.DeleteAsync(url);
+                resp.EnsureSuccessStatusCode();
+
+                MessageBox.Show("محصول با موفقیت حذف شد.", "حذف", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                var items = await LoadItemsFromApiAsync();
+                _view.Clear();
+                foreach (var it in items)
+                {
+                    _view.Add(new ItemView()
+                    {
+                        Id = it.Id,
+                        Name = it.Name,
+                        Category = ToFa(it.Category),
+                        Description = it.Description,
+                        UnitPrice = it.UnitPrice,
+                        Quantity = it.Quantity,
+                        CreatedAt = it.CreatedAt
+                    });
+                }
+                _bs.ResetBindings(false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "خطا در حذف", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-        private Item? GetSelectedItem()
+        private ItemView? GetSelectedItem()
         {
             foreach (DataGridViewRow r in dgvItems.Rows)
             {
@@ -276,12 +347,12 @@ namespace InventoryManagement
                     isChecked = Convert.ToBoolean(cb.EditedFormattedValue ?? cb.Value ?? false);
 
                 if (isChecked)
-                    return r.DataBoundItem as Item;
+                    return r.DataBoundItem as ItemView;
             }
-            return dgvItems.CurrentRow?.DataBoundItem as Item;
+            return dgvItems.CurrentRow?.DataBoundItem as ItemView;
         }
 
-        private static string ToFa(CategoryType ct) => ct switch
+        public static string ToFa(CategoryType ct) => ct switch
         {
             CategoryType.Clothes => "پوشاک",
             CategoryType.Electronics => "لوازم الکترونیکی",
@@ -301,7 +372,7 @@ namespace InventoryManagement
             _ => ct.ToString()
         };
 
-        private static CategoryType FromFa(string fa) => fa switch
+        public static CategoryType FromFa(string fa) => fa switch
         {
             "پوشاک" => CategoryType.Clothes,
             "لوازم الکترونیکی" => CategoryType.Electronics,
@@ -318,7 +389,7 @@ namespace InventoryManagement
             "وسایل نقلیه" => CategoryType.Vehicles,
             "لوازم خانگی" => CategoryType.HomeAppliances,
             "سایر موارد" => CategoryType.Others,
-            _ => CategoryType.Others // پیش‌فرض اگر رشته ناشناخته باشه
+            _ => CategoryType.Others
         };
 
         private static readonly HttpClient _http = new()
@@ -329,7 +400,7 @@ namespace InventoryManagement
         private static readonly JsonSerializerOptions _jsonOptions = new()
         {
             PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter() } // "Electronics" -> CategoryType.Electronics
+            Converters = { new JsonStringEnumConverter() }
         };
     }
 }

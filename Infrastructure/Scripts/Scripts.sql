@@ -99,8 +99,6 @@ BEGIN
 END
 GO
 
-select * from Items
-where Name LIKE N'%ساعت %'
 
 
 CREATE OR ALTER PROCEDURE dbo.Item_GetById
