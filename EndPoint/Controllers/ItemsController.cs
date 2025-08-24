@@ -1,13 +1,12 @@
 ﻿using Application.Interfaces;
 using Application.Models.Requests;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EndPoint.Controllers;
 
 [ApiController]
 [Route("[controller]/v{version:ApiVersion}")]
-[Authorize]
+//[Authorize]
 public class ItemsController(IInventoryService service) : ControllerBase
 {
     [HttpGet]

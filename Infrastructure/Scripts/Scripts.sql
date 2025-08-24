@@ -181,24 +181,24 @@ GO
 
 
 WITH S AS (
-    SELECT N'تی‌شرت مردانه'        AS [Name], N'Clothes'        AS CatName, N'نخی، سایز L'              AS [Description], CAST( 350000     AS DECIMAL(18,2)) AS UnitPrice, 0 AS Quantity UNION ALL
+    SELECT N'تی‌شرت مردانه'        AS [Name], N'Clothes'        AS CatName, N'نخی، سایز L'              AS [Description], CAST( 350000     AS DECIMAL(18,2)) AS UnitPrice, 10 AS Quantity UNION ALL
     SELECT N'شلوار جین',                    N'Clothes',                 N'آبی تیره',                         950000,                               10 UNION ALL
-    SELECT N'گوشی هوشمند',                  N'Electronics',             N'128GB، دو سیم‌کارت',              18500000,                             20 UNION ALL
-    SELECT N'هدفون بی‌سیم',                 N'Electronics',             N'بلوتوث 5.3',                      2300000,                              30 UNION ALL
-    SELECT N'برنج هاشمی 10 کیلویی',         N'Food',                    N'عطرمحلی',                         1980000,                              10 UNION ALL
-    SELECT N'روغن زیتون 1 لیتری',           N'Food',                    N'فرابکر',                          520000,                               10 UNION ALL
-    SELECT N'صندلی اداری',                  N'Furniture',               N'ارگونومیک، مش',                   4200000,                              10 UNION ALL
+    SELECT N'گوشی هوشمند',                  N'Electronics',             N'128GB، دو سیم‌کارت',              18500000,                             21 UNION ALL
+    SELECT N'هدفون بی‌سیم',                 N'Electronics',             N'بلوتوث 5.3',                      2300000,                              32 UNION ALL
+    SELECT N'برنج هاشمی 10 کیلویی',         N'Food',                    N'عطرمحلی',                         1980000,                              15 UNION ALL
+    SELECT N'روغن زیتون 1 لیتری',           N'Food',                    N'فرابکر',                          520000,                               18 UNION ALL
+    SELECT N'صندلی اداری',                  N'Furniture',               N'ارگونومیک، مش',                   4200000,                              13 UNION ALL
     SELECT N'میز تحریر',                    N'Furniture',               N'120×60 ام‌دی‌اف',                 3100000,                              50 UNION ALL
-    SELECT N'دفتر 100 برگ',                 N'Stationery',              N'خط‌دار',                          45000,                                60 UNION ALL
+    SELECT N'دفتر 100 برگ',                 N'Stationery',              N'خط‌دار',                          45000,                                62 UNION ALL
     SELECT N'خودکار آبی',                   N'Stationery',              N'نوک 0.7',                         18000,                                70 UNION ALL
-    SELECT N'آچار فرانسه',                  N'Tools',                   N'10 اینچ',                         270000,                               30 UNION ALL
-    SELECT N'دریل برقی',                    N'Tools',                   N'600 وات',                         2150000,                              20 UNION ALL
+    SELECT N'آچار فرانسه',                  N'Tools',                   N'10 اینچ',                         270000,                               32 UNION ALL
+    SELECT N'دریل برقی',                    N'Tools',                   N'600 وات',                         2150000,                              21 UNION ALL
     SELECT N'لِگو 500 تکه',                 N'Toys',                    N'مناسب ۶+',                        1350000,                              10 UNION ALL
-    SELECT N'کتاب برنامه‌نویسی C#',        N'Books',                   N'چاپ ۱۴۰۳',                        420000,                               40 UNION ALL
-    SELECT N'توپ فوتبال',                   N'Sports',                  N'سایز ۵',                          380000,                               60 UNION ALL
-    SELECT N'سشوار خانگی',                  N'HomeAppliances',          N'۲۰۰۰ وات',                        1150000,                              30 UNION ALL
-    SELECT N'عینک آفتابی',                  N'Accessories',             N'UV400',                            620000,                               50 UNION ALL
-    SELECT N'کِرِم مرطوب‌کننده',           N'Beauty',                  N'پوست خشک',                        210000,                               10 UNION ALL
+    SELECT N'کتاب برنامه‌نویسی C#',        N'Books',                   N'چاپ ۱۴۰۳',                        420000,                               42 UNION ALL
+    SELECT N'توپ فوتبال',                   N'Sports',                  N'سایز ۵',                          380000,                               69 UNION ALL
+    SELECT N'سشوار خانگی',                  N'HomeAppliances',          N'۲۰۰۰ وات',                        1150000,                              39 UNION ALL
+    SELECT N'عینک آفتابی',                  N'Accessories',             N'UV400',                            620000,                               53 UNION ALL
+    SELECT N'کِرِم مرطوب‌کننده',           N'Beauty',                  N'پوست خشک',                        210000,                               17 UNION ALL
     SELECT N'تب‌سنج دیجیتال',               N'Medicine',                N'غیـر پزشکی (OTC)',               290000,                               10
 )
 INSERT INTO dbo.Items (Name, Category, Description, UnitPrice, Quantity)

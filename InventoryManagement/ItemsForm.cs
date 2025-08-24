@@ -1,6 +1,10 @@
 ﻿using Domain.Entities;
 using Domain.Enums;
 using System.ComponentModel;
+using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Xml.Linq;
 
 namespace InventoryManagement
 {
@@ -8,7 +12,6 @@ namespace InventoryManagement
     {
         private readonly BindingList<Item> _view = new();
         private readonly BindingSource _bs = new();
-
 
         public ItemsForm()
         {
@@ -97,7 +100,7 @@ namespace InventoryManagement
                 cell.Value = !current;
             };
 
-            // کلیک روی هر ستون دیگر → همان ردیف تیک بخورد
+
             dgvItems.CellClick += (s, e) =>
             {
                 if (e.RowIndex < 0) return;
@@ -113,41 +116,114 @@ namespace InventoryManagement
             dgvItems.DataSource = _bs;
             dgvItems.CellFormatting += dgvEmployees_CellFormatting;
         }
-        private void ItemsForm_Load(object sender, EventArgs e)
+        private async void ItemsForm_Load(object sender, EventArgs e)
         {
-            var sampleItems = new List<Item>
+            try
             {
-                new Item { Id = 1,  Name = "تی‌شرت مردانه",         Category = CategoryType.Clothes,         Description = "نخی، سایز L",             UnitPrice = 350_000m },
-                new Item { Id = 2,  Name = "شلوار جین",             Category = CategoryType.Clothes,         Description = "آبی تیره",                 UnitPrice = 950_000m },
-                new Item { Id = 3,  Name = "گوشی هوشمند",           Category = CategoryType.Electronics,     Description = "128GB، دو سیم‌کارت",       UnitPrice = 18_500_000m },
-                new Item { Id = 4,  Name = "هدفون بی‌سیم",          Category = CategoryType.Electronics,     Description = "بلوتوث 5.3",               UnitPrice = 2_300_000m },
-                new Item { Id = 5,  Name = "برنج هاشمی 10 کیلویی",  Category = CategoryType.Food,            Description = "عطرمحلی",                  UnitPrice = 1_980_000m },
-                new Item { Id = 6,  Name = "روغن زیتون 1 لیتری",    Category = CategoryType.Food,            Description = "فرابکر",                   UnitPrice = 520_000m },
-                new Item { Id = 7,  Name = "صندلی اداری",           Category = CategoryType.Furniture,       Description = "ارگونومیک، مش",            UnitPrice = 4_200_000m },
-                new Item { Id = 8,  Name = "میز تحریر",             Category = CategoryType.Furniture,       Description = "120×60 ام‌دی‌اف",          UnitPrice = 3_100_000m },
-                new Item { Id = 9,  Name = "دفتر 100 برگ",          Category = CategoryType.Stationery,      Description = "خط‌دار",                   UnitPrice = 45_000m },
-                new Item { Id = 10, Name = "خودکار آبی",            Category = CategoryType.Stationery,      Description = "نوک 0.7",                  UnitPrice = 18_000m },
-                new Item { Id = 11, Name = "آچار فرانسه",           Category = CategoryType.Tools,           Description = "10 اینچ",                  UnitPrice = 270_000m },
-                new Item { Id = 12, Name = "دریل برقی",             Category = CategoryType.Tools,           Description = "600 وات",                  UnitPrice = 2_150_000m },
-                new Item { Id = 13, Name = "لِگو 500 تکه",          Category = CategoryType.Toys,            Description = "مناسب 6+",                 UnitPrice = 1_350_000m },
-                new Item { Id = 14, Name = "کتاب برنامه‌نویسی C#",  Category = CategoryType.Books,           Description = "چاپ 1403",                 UnitPrice = 420_000m },
-                new Item { Id = 15, Name = "توپ فوتبال",            Category = CategoryType.Sports,          Description = "سایز 5",                   UnitPrice = 380_000m },
-                new Item { Id = 16, Name = "سشوار خانگی",           Category = CategoryType.HomeAppliances,  Description = "2000 وات",                 UnitPrice = 1_150_000m },
-                new Item { Id = 17, Name = "عینک آفتابی",           Category = CategoryType.Accessories,     Description = "UV400",                    UnitPrice = 620_000m },
-                new Item { Id = 18, Name = "کِرِم مرطوب‌کننده",     Category = CategoryType.Beauty,          Description = "پوست خشک",                 UnitPrice = 210_000m },
-                new Item { Id = 19, Name = "تب‌سنج دیجیتال",        Category = CategoryType.Medicine,        Description = "غیری پزشکی (OTC)",        UnitPrice = 290_000m }
-            };
+                var items = await LoadItemsFromApiAsync();
+                _view.Clear();
 
-            _view.Clear();
-            foreach (var it in sampleItems) _view.Add(it);
+                foreach (var it in items)
+                {
+                    _view.Add(new Item
+                    {
+                        Id = it.Id,
+                        Name = it.Name,
+                        Category = it.Category,
+                        Description = it.Description,
+                        UnitPrice = it.UnitPrice,
+                        Quantity = it.Quantity,
+                        CreatedAt = it.CreatedAt
+                    });
+                }
 
-            _bs.DataSource = _view;
-            dgvItems.DataSource = _bs;
+                _bs.ResetBindings(false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "خطا");
+            }
         }
 
-        private void btnSearch_Click(object sender, EventArgs e)
+        private async Task<List<ApiItemDto>> LoadItemsFromApiAsync()
         {
+            try
+            {
+                var req = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/Items/v1/Search");
 
+                req.Headers.Accept.Clear();
+                req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
+
+                using var resp = await _http.SendAsync(req);
+                resp.EnsureSuccessStatusCode();
+
+                var json = await resp.Content.ReadAsStringAsync();
+                var data = JsonSerializer.Deserialize<List<ApiItemDto>>(json, _jsonOptions) ?? new();
+                return data;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private async void btnSearch_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var name = txtSearch.Text?.Trim();
+                var category = FromFa(comboBox1.SelectedItem?.ToString()).ToString();
+
+                var items = await SearchItemsFromApiAsync(name, category);
+
+                _view.Clear();
+                foreach (var it in items)
+                {
+                    _view.Add(new Item
+                    {
+                        Id = it.Id,
+                        Name = it.Name,
+                        Category = it.Category,
+                        Description = it.Description,
+                        UnitPrice = it.UnitPrice,
+                        Quantity = it.Quantity,
+                        CreatedAt = it.CreatedAt
+                    });
+                }
+                _bs.ResetBindings(false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "خطا در جستجو");
+            }
+        }
+
+        private async Task<List<ApiItemDto>> SearchItemsFromApiAsync(string? name, string? category)
+        {
+            var url = "http://localhost:5000/Items/v1/Search";
+
+            var query = new List<string>();
+            if (!string.IsNullOrWhiteSpace(name))
+                query.Add($"Name={Uri.EscapeDataString(name)}");
+
+            if (!string.IsNullOrWhiteSpace(category))
+                query.Add($"Category={Uri.EscapeDataString(category)}");
+
+            if (query.Count > 0)
+                url += "?" + string.Join("&", query);
+
+            using var req = new HttpRequestMessage(HttpMethod.Get, url);
+            req.Headers.Accept.Clear();
+            req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            using var resp = await _http.SendAsync(req);
+            resp.EnsureSuccessStatusCode();
+
+            var json = await resp.Content.ReadAsStringAsync();
+            var data = JsonSerializer.Deserialize<List<ApiItemDto>>(json, _jsonOptions) ?? new();
+            return data;
         }
 
 
@@ -223,6 +299,37 @@ namespace InventoryManagement
             CategoryType.HomeAppliances => "لوازم خانگی",
             CategoryType.Others => "سایر موارد",
             _ => ct.ToString()
+        };
+
+        private static CategoryType FromFa(string fa) => fa switch
+        {
+            "پوشاک" => CategoryType.Clothes,
+            "لوازم الکترونیکی" => CategoryType.Electronics,
+            "مواد غذایی" => CategoryType.Food,
+            "مبلمان" => CategoryType.Furniture,
+            "لوازم‌التحریر" => CategoryType.Stationery,
+            "ابزارها" => CategoryType.Tools,
+            "اسباب‌بازی‌ها" => CategoryType.Toys,
+            "کتاب‌ها" => CategoryType.Books,
+            "ورزش" => CategoryType.Sports,
+            "زیبایی" => CategoryType.Beauty,
+            "دارو" => CategoryType.Medicine,
+            "لوازم جانبی" => CategoryType.Accessories,
+            "وسایل نقلیه" => CategoryType.Vehicles,
+            "لوازم خانگی" => CategoryType.HomeAppliances,
+            "سایر موارد" => CategoryType.Others,
+            _ => CategoryType.Others // پیش‌فرض اگر رشته ناشناخته باشه
+        };
+
+        private static readonly HttpClient _http = new()
+        {
+            BaseAddress = new Uri("http://localhost:5000/")
+        };
+
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() } // "Electronics" -> CategoryType.Electronics
         };
     }
 }
