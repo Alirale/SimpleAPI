@@ -1,10 +1,12 @@
+using Application.Models;
+using Application.Models.Requests;
 using Domain.Entities;
 
 namespace Application.Interfaces;
 
 public interface IItemRepository
 {
-    Task<(IEnumerable<Item> Items, int TotalCount)> SearchAsync(string? keyword, int pageNumber, int pageSize);
+    Task<List<ItemDto?>> SearchAsync(SearchItemRequest searchModel);
     Task<Item?> GetByIdAsync(int id);
     Task<int> CreateAsync(Item item);
     Task<bool> UpdateAsync(Item item);

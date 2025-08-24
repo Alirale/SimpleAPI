@@ -1,65 +1,63 @@
-using Application.Interfaces;
+﻿using Application.Interfaces;
+using Application.Models;
 using Application.Models.Requests;
 using Domain.Entities;
-using Warehouse.Application.Models;
-using Warehouse.Application.Models.Responses;
 
-namespace Application.Services;
-
-public class ItemService : IItemService
+namespace Application.Services
 {
-    private readonly IItemRepository _repo;
-    public ItemService(IItemRepository repo) => _repo = repo;
-
-    public async Task<PagedResult<ItemDto>> SearchAsync(string? keyword, int pageNumber, int pageSize)
+    public class InventoryService(IItemRepository inventoryRepository) : IInventoryService
     {
-        var (items, total) = await _repo.SearchAsync(keyword, pageNumber, pageSize);
-        return new PagedResult<ItemDto>
+        public async Task<List<ItemDto?>> SearchAsync(SearchItemRequest searchModel)
         {
-            Items = items.Select(MapToDto),
-            TotalCount = total,
-            PageNumber = pageNumber,
-            PageSize = pageSize
+            var items = await inventoryRepository.SearchAsync(searchModel);
+            return items;
+        }
+
+        public async Task<ItemDto?> GetByIdAsync(int id)
+        {
+            var item = await inventoryRepository.GetByIdAsync(id);
+            return item is null ? null : MapToDto(item);
+        }
+
+        public async Task<int> CreateAsync(CreateItemRequest request)
+        {
+            var item = new Item
+            {
+                Name = request.Name,
+                Category = request.Category,
+                Description = request.Description,
+                Quantity = request.Quantity,
+                UnitPrice = request.UnitPrice
+            };
+            return await inventoryRepository.CreateAsync(item);
+        }
+
+        public async Task<bool> UpdateAsync(UpdateItemRequest request)
+        {
+            var existing = await inventoryRepository.GetByIdAsync(request.Id);
+            if (existing is null) return false;
+
+            existing.Name = request.Name;
+            existing.Category = request.Category;
+            existing.Description = request.Description;
+            existing.Quantity = request.Quantity;
+            existing.UnitPrice = request.UnitPrice;
+
+            return await inventoryRepository.UpdateAsync(existing);
+        }
+
+        public Task<bool> DeleteAsync(int id) => inventoryRepository.DeleteAsync(id);
+
+
+        private static ItemDto MapToDto(Item item) => new()
+        {
+            Id = item.Id,
+            Name = item.Name,
+            Category = item.Category,
+            Description = item.Description,
+            Quantity = item.Quantity,
+            UnitPrice = item.UnitPrice,
+            CreatedAt = item.CreatedAt
         };
     }
-
-    public async Task<ItemDto?> GetByIdAsync(int id)
-    {
-        var item = await _repo.GetByIdAsync(id);
-        return item is null ? null : MapToDto(item);
-    }
-
-    public async Task<int> CreateAsync(CreateItemRequest request)
-    {
-        var item = new Item
-        {
-            SKU = request.SKU,
-            Name = request.Name,
-            CategoryId = request.CategoryId,
-            Description = request.Description,
-            Quantity = request.Quantity,
-            UnitPrice = request.UnitPrice
-        };
-        return await _repo.CreateAsync(item);
-    }
-
-    public async Task<bool> UpdateAsync(int id, UpdateItemRequest request)
-    {
-        var existing = await _repo.GetByIdAsync(id);
-        if (existing is null) return false;
-
-        existing.Name = request.Name;
-        existing.CategoryId = request.CategoryId;
-        existing.Description = request.Description;
-        existing.Quantity = request.Quantity;
-        existing.UnitPrice = request.UnitPrice;
-        existing.UpdatedAt = DateTime.UtcNow;
-
-        return await _repo.UpdateAsync(existing);
-    }
-
-    public Task<bool> DeleteAsync(int id) => _repo.DeleteAsync(id);
-
-    private static ItemDto MapToDto(Item x) =>
-        new ItemDto(x.Id, x.SKU, x.Name, x.CategoryId, x.Description, x.Quantity, x.UnitPrice, x.CreatedAt, x.UpdatedAt);
 }

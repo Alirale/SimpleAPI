@@ -5,9 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EndPoint.Controllers
 {
-    /// <summary>
-    /// 
-    /// </summary>
     [ApiController]
     [ApiVersion("1.0")]
     [Route("[controller]/v{version:ApiVersion}")]

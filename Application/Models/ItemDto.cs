@@ -1,13 +1,12 @@
-namespace Warehouse.Application.Models;
+using Domain.Enums;
 
-public record ItemDto(
-    int Id,
-    string SKU,
-    string Name,
-    int? CategoryId,
-    string? Description,
-    int Quantity,
-    decimal UnitPrice,
-    DateTime CreatedAt,
-    DateTime? UpdatedAt
-);
+public class ItemDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public CategoryType Category { get; set; }
+    public string? Description { get; set; }
+    public int Quantity { get; set; }
+    public decimal UnitPrice { get; set; }
+    public DateTime CreatedAt { get; set; }
+}

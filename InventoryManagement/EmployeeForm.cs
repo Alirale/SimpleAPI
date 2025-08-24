@@ -99,9 +99,9 @@ namespace InventoryManagement
         {
             _view.Clear();
 
-            _view.Add(new User { ID = 1, FirstName = "علی", LastName = "رضایی", UserName = "alirez", MobileNumber = "0912...", Email = "ali@example.com" });
-            _view.Add(new User { ID = 2, FirstName = "مریم", LastName = "احمدی", UserName = "maryam", MobileNumber = "0935...", Email = "maryam@example.com" });
-            _view.Add(new User { ID = 3, FirstName = "حسین", LastName = "کریمی", UserName = "hossein", MobileNumber = "0913...", Email = "hossein@example.com" });
+            _view.Add(new User { Id = 1, FirstName = "علی", LastName = "رضایی", UserName = "alireza", MobileNumber = "0912...", Email = "ali@example.com" });
+            _view.Add(new User { Id = 2, FirstName = "مریم", LastName = "احمدی", UserName = "maryam", MobileNumber = "0935...", Email = "maryam@example.com" });
+            _view.Add(new User { Id = 3, FirstName = "حسین", LastName = "کریمی", UserName = "hossein", MobileNumber = "0913...", Email = "hossein@example.com" });
 
             _view.RaiseListChangedEvents = true;
             _view.ResetBindings();

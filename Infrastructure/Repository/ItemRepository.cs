@@ -1,74 +1,146 @@
-using System.Data;
-using Application.Interfaces;
-using Dapper;
+﻿using Application.Interfaces;
+using Application.Models.Requests;
 using Domain.Entities;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Data;
+using Dapper;
 
-namespace Infrastructure.Repository;
-
-public class ItemRepository : IItemRepository
+namespace Infrastructure.Repository
 {
-    private readonly ISqlConnectionFactory _factory;
-    public ItemRepository(ISqlConnectionFactory factory) => _factory = factory;
-
-    public async Task<(IEnumerable<Item> Items, int TotalCount)> SearchAsync(string? keyword, int pageNumber, int pageSize)
+    public class ItemRepository : IItemRepository
     {
-        using var conn = _factory.Create();
-        var p = new DynamicParameters();
-        p.Add("@Keyword", keyword, DbType.String);
-        p.Add("@PageNumber", pageNumber, DbType.Int32);
-        p.Add("@PageSize", pageSize, DbType.Int32);
+        private readonly ILogger<IUsersDataAccess> _logger;
+        private readonly string? _connectionString;
 
-        using var multi = await conn.QueryMultipleAsync("dbo.usp_Items_SearchPaged", p, commandType: CommandType.StoredProcedure);
-        var items = await multi.ReadAsync<Item>();
-        var total = await multi.ReadFirstAsync<int>();
-        return (items, total);
-    }
+        public ItemRepository(IConfiguration config, ILogger<IUsersDataAccess> logger)
+        {
+            _connectionString = config["connection"];
+            _logger = logger;
+        }
 
-    public async Task<Item?> GetByIdAsync(int id)
-    {
-        using var conn = _factory.Create();
-        var p = new DynamicParameters();
-        p.Add("@Id", id, DbType.Int32);
-        return await conn.QueryFirstOrDefaultAsync<Item>("dbo.usp_Items_GetById", p, commandType: CommandType.StoredProcedure);
-    }
+        public async Task<Item?> GetByIdAsync(int id)
+        {
+            try
+            {
+                await using var conn = new SqlConnection(_connectionString);
 
-    public async Task<int> CreateAsync(Item item)
-    {
-        using var conn = _factory.Create();
-        var p = new DynamicParameters();
-        p.Add("@SKU", item.SKU);
-        p.Add("@Name", item.Name);
-        p.Add("@CategoryId", item.CategoryId);
-        p.Add("@Description", item.Description);
-        p.Add("@Quantity", item.Quantity);
-        p.Add("@UnitPrice", item.UnitPrice);
-        p.Add("@NewId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                if (id > 0)
+                {
+                    return await conn.QueryFirstOrDefaultAsync<Item>(
+                        "dbo.Item_GetById",
+                        new { Id = (int?)id },
+                        commandType: CommandType.StoredProcedure);
+                }
 
-        await conn.ExecuteAsync("dbo.usp_Items_Insert", p, commandType: CommandType.StoredProcedure);
-        return p.Get<int>("@NewId");
-    }
+                var rows = await conn.QueryAsync<Item>(
+                    "dbo.Item_GetById",
+                    new { Id = (int?)null },
+                    commandType: CommandType.StoredProcedure);
+                return rows.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "GetByIdAsync failed for Id {Id}", id);
+                throw;
+            }
+        }
 
-    public async Task<bool> UpdateAsync(Item item)
-    {
-        using var conn = _factory.Create();
-        var p = new DynamicParameters();
-        p.Add("@Id", item.Id);
-        p.Add("@Name", item.Name);
-        p.Add("@CategoryId", item.CategoryId);
-        p.Add("@Description", item.Description);
-        p.Add("@Quantity", item.Quantity);
-        p.Add("@UnitPrice", item.UnitPrice);
+        public async Task<List<ItemDto?>> SearchAsync(SearchItemRequest searchModel)
+        {
+            try
+            {
+                await using var conn = new SqlConnection(_connectionString);
+                var name = string.IsNullOrWhiteSpace(searchModel.Name) ? null : searchModel.Name.Trim();
 
-        var rows = await conn.ExecuteAsync("dbo.usp_Items_Update", p, commandType: CommandType.StoredProcedure);
-        return rows > 0;
-    }
+                var rows = await conn.QueryAsync<ItemDto>(
+                    "dbo.Item_Search",
+                    new { Name = name, Category = searchModel?.Category.ToString() },
+                    commandType: CommandType.StoredProcedure);
 
-    public async Task<bool> DeleteAsync(int id)
-    {
-        using var conn = _factory.Create();
-        var p = new DynamicParameters();
-        p.Add("@Id", id);
-        var rows = await conn.ExecuteAsync("dbo.usp_Items_Delete", p, commandType: CommandType.StoredProcedure);
-        return rows > 0;
+                return rows.ToList()!;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "SearchAsync failed");
+                throw;
+            }
+        }
+
+        public async Task<int> CreateAsync(Item item)
+        {
+            try
+            {
+                await using var conn = new SqlConnection(_connectionString);
+
+                var newId = await conn.ExecuteScalarAsync<int>(
+                    "dbo.Item_Insert",
+                    new
+                    {
+                        item.Name,
+                        Category = item.Category.ToString(),
+                        item.Description,
+                        item.UnitPrice,
+                        item.Quantity
+                    },
+                    commandType: CommandType.StoredProcedure);
+
+                return newId;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "CreateAsync failed");
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateAsync(Item item)
+        {
+            try
+            {
+                await using var conn = new SqlConnection(_connectionString);
+
+                var succeeded = await conn.ExecuteScalarAsync<bool>(
+                    "dbo.Item_Update",
+                    new
+                    {
+                        item.Id,
+                        item.Name,
+                        Category = item.Category.ToString(),
+                        item.Description,
+                        item.UnitPrice,
+                        item.Quantity
+                    },
+                    commandType: CommandType.StoredProcedure);
+
+                return succeeded;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UpdateAsync failed for Id {Id}", item.Id);
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            try
+            {
+                await using var conn = new SqlConnection(_connectionString);
+
+                var succeeded = await conn.ExecuteScalarAsync<bool>(
+                    "dbo.Item_Delete",
+                    new { Id = id },
+                    commandType: CommandType.StoredProcedure);
+
+                return succeeded;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "DeleteAsync failed for Id {Id}", id);
+                throw;
+            }
+        }
     }
 }

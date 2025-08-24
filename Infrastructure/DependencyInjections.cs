@@ -9,6 +9,7 @@ namespace Infrastructure
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
             services.AddSingleton<IUsersDataAccess, UsersDataAccess>();
+            services.AddScoped<IItemRepository, ItemRepository>();
             return services;
         }
     }

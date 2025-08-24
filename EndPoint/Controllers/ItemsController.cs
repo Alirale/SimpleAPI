@@ -1,53 +1,52 @@
 ﻿using Application.Interfaces;
 using Application.Models.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EndPoint.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class ItemsController : ControllerBase
+[Route("[controller]/v{version:ApiVersion}")]
+[Authorize]
+public class ItemsController(IInventoryService service) : ControllerBase
 {
-    private readonly IItemService _service;
-    public ItemsController(IItemService service) => _service = service;
-
-
     [HttpGet]
-    public async Task<IActionResult> Search([FromQuery] string? keyword, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
+    [Route("Search")]
+    public async Task<List<ItemDto>> Search([FromQuery] SearchItemRequest model)
     {
-        if (pageNumber < 1 || pageSize < 1 || pageSize > 200) return BadRequest("Invalid paging parameters.");
-        var result = await _service.SearchAsync(keyword, pageNumber, pageSize);
-        return Ok(result);
+        var result = await service.SearchAsync(model);
+        return result;
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    [HttpGet]
+    [Route("Get")]
+    public async Task<ItemDto?> Get(int id)
     {
-        var item = await _service.GetByIdAsync(id);
-        return item is null ? NotFound() : Ok(item);
+        var item = await service.GetByIdAsync(id);
+        return item;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateItemRequest request)
+    [Route("Create")]
+    public async Task<bool> Create([FromBody] CreateItemRequest request)
     {
-        if (!ModelState.IsValid) return ValidationProblem(ModelState);
-        var id = await _service.CreateAsync(request);
-        var created = await _service.GetByIdAsync(id);
-        return CreatedAtAction(nameof(Get), new { id }, created);
+        var id = await service.CreateAsync(request);
+        return true;
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateItemRequest request)
+    [HttpPut]
+    [Route("Update")]
+    public async Task<bool> Update([FromBody] UpdateItemRequest request)
     {
-        if (!ModelState.IsValid) return ValidationProblem(ModelState);
-        var ok = await _service.UpdateAsync(id, request);
-        return ok ? NoContent() : NotFound();
+        var ok = await service.UpdateAsync(request);
+        return ok;
     }
 
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
+    [HttpDelete]
+    [Route("Delete")]
+    public async Task<bool> Delete(int id)
     {
-        var ok = await _service.DeleteAsync(id);
-        return ok ? NoContent() : NotFound();
+        var ok = await service.DeleteAsync(id);
+        return ok;
     }
 }

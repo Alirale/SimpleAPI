@@ -1,14 +1,13 @@
+using Application.Models;
 using Application.Models.Requests;
-using Warehouse.Application.Models;
-using Warehouse.Application.Models.Responses;
 
 namespace Application.Interfaces;
 
-public interface IItemService
+public interface IInventoryService
 {
-    Task<PagedResult<ItemDto>> SearchAsync(string? keyword, int pageNumber, int pageSize);
+    Task<List<ItemDto?>> SearchAsync(SearchItemRequest searchModel);
     Task<ItemDto?> GetByIdAsync(int id);
     Task<int> CreateAsync(CreateItemRequest request);
-    Task<bool> UpdateAsync(int id, UpdateItemRequest request);
+    Task<bool> UpdateAsync(UpdateItemRequest request);
     Task<bool> DeleteAsync(int id);
 }
