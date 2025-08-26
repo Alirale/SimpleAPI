@@ -79,5 +79,27 @@ namespace Infrastructure.Repository
                 throw;
             }
         }
+
+        public async Task<bool> DeleteUser(int id)
+        {
+            try
+            {
+                await using var sqlConnection = new SqlConnection(_connectionString);
+                var res = (await sqlConnection.ExecuteAsync(sql: "User_Delete",
+                    new
+                    {
+                        id
+                    },
+                    commandType: CommandType.StoredProcedure,
+                    commandTimeout: 240
+                ));
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw;
+            }
+        }
     }
 }

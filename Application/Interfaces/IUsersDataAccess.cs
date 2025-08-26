@@ -6,5 +6,6 @@ public interface IUsersDataAccess
 {
     public Task<User> GetUser(string userId);
     public Task<bool> AddUser(User user);
+    public Task<bool> DeleteUser(int id);
     public Task<List<User>> ValidateUser(string userName, string password);
 }

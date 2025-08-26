@@ -20,6 +20,7 @@ CREATE TABLE [dbo].[Users] (
     [Password] NVARCHAR(256) NOT NULL
 );
 
+Go
 
 CREATE OR ALTER PROCEDURE dbo.[User_Get]
     @UserName NVARCHAR(50)
@@ -77,26 +78,43 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.Item_Search
-    @Name     NVARCHAR(200) = NULL,
-    @Category VARCHAR(50) = NULL
+Create Or ALTER PROCEDURE dbo.Item_Search
+    @Name NVARCHAR(200) = NULL,
+    @Category VARCHAR(50) = NULL,
+    @FromDate DATETIME = NULL,
+    @ToDate DATETIME = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    SELECT
-        i.Id,
-        i.CreatedAt,
-        i.Name,
-        i.Category,
-        i.Description,
-        i.UnitPrice,
-        i.Quantity
+    SELECT i.Id,
+           i.CreatedAt,
+           i.Name,
+           i.Category,
+           i.Description,
+           i.UnitPrice,
+           i.Quantity
     FROM dbo.Items i
-    WHERE (@Name IS NULL OR i.Name LIKE N'%' + @Name + N'%')
-      AND (@Category IS NULL OR @Category = N'' OR i.Category = @Category)
-    ORDER BY i.CreatedAt DESC, i.Id DESC;
-END
+    WHERE (
+              @Name IS NULL
+              OR i.Name LIKE N'%' + @Name + N'%'
+          )
+          AND (
+              @Category IS NULL
+              OR @Category = N''
+              OR i.Category = @Category
+          )
+          AND (
+              @FromDate IS NULL
+              OR  CAST(i.CreatedAt AS DATE) >= CAST(@FromDate AS DATE)
+          )
+          AND (
+              @ToDate IS NULL
+              OR  CAST(i.CreatedAt AS DATE) <= CAST(@ToDate AS DATE)
+          )
+    ORDER BY i.CreatedAt DESC,
+             i.Id DESC;
+END;
 GO
 
 
@@ -179,7 +197,7 @@ GO
 
 
 WITH S AS (
-    SELECT N'تی‌شرت مردانه'        AS [Name], N'Clothes'        AS CatName, N'نخی، سایز L'              AS [Description], CAST( 350000     AS DECIMAL(18,2)) AS UnitPrice, 10 AS Quantity UNION ALL
+    SELECT N'تی‌شرت مردانه'        AS [Name], N'Clothes'        AS CatName, N'نخی، سایز L'              AS [Description], CAST(350000 AS DECIMAL(18,2)) AS UnitPrice, 10 AS Quantity UNION ALL
     SELECT N'شلوار جین',                    N'Clothes',                 N'آبی تیره',                         950000,                               10 UNION ALL
     SELECT N'گوشی هوشمند',                  N'Electronics',             N'128GB، دو سیم‌کارت',              18500000,                             21 UNION ALL
     SELECT N'هدفون بی‌سیم',                 N'Electronics',             N'بلوتوث 5.3',                      2300000,                              32 UNION ALL
@@ -199,8 +217,12 @@ WITH S AS (
     SELECT N'کِرِم مرطوب‌کننده',           N'Beauty',                  N'پوست خشک',                        210000,                               17 UNION ALL
     SELECT N'تب‌سنج دیجیتال',               N'Medicine',                N'غیـر پزشکی (OTC)',               290000,                               10
 )
-INSERT INTO dbo.Items (Name, Category, Description, UnitPrice, Quantity)
-SELECT s.[Name], s.CatName, s.[Description], s.UnitPrice, s.Quantity
+INSERT INTO dbo.Items (Name, Category, Description, UnitPrice, Quantity, CreatedAt)
+SELECT s.[Name], 
+       s.CatName, 
+       s.[Description], 
+       s.UnitPrice, 
+       s.Quantity, 
+       DATEADD(DAY, (RAND(CHECKSUM(NEWID())) * 21 - 10), '2025-08-23') AS CreatedAt
 FROM S s;
-
 

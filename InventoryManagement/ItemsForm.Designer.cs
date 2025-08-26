@@ -15,6 +15,10 @@
         private Button btnSearch;
         private Panel panelHeader;
         private Label lblTitle;
+        private DateTimePicker dtpFrom;
+        private DateTimePicker dtpTo;
+        private Label lblDateFrom;
+        private Label lblDateTo;
 
         protected override void Dispose(bool disposing)
         {
@@ -25,14 +29,16 @@
 
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             dgvItems = new DataGridView();
             panelTop = new Panel();
             lblSearch = new Label();
             txtSearch = new TextBox();
             lblCategory = new Label();
             comboBox1 = new ComboBox();
+            lblDateFrom = new Label();
+            dtpFrom = new DateTimePicker();
+            lblDateTo = new Label();
+            dtpTo = new DateTimePicker();
             btnSearch = new Button();
             buttonAdd = new Button();
             buttonEdit = new Button();
@@ -46,25 +52,16 @@
             // 
             // dgvItems
             // 
-            dataGridViewCellStyle1.BackColor = Color.WhiteSmoke;
-            dgvItems.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dgvItems.AllowUserToAddRows = false;
+            dgvItems.AllowUserToDeleteRows = false;
             dgvItems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvItems.BackgroundColor = Color.White;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = Color.SteelBlue;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle2.ForeColor = Color.White;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            dgvItems.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dgvItems.Dock = DockStyle.Fill;
-            dgvItems.EnableHeadersVisualStyles = false;
             dgvItems.Location = new Point(0, 115);
             dgvItems.Name = "dgvItems";
             dgvItems.ReadOnly = true;
             dgvItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvItems.Size = new Size(1103, 485);
+            dgvItems.Size = new Size(1447, 565);
             dgvItems.TabIndex = 0;
             // 
             // panelTop
@@ -74,6 +71,10 @@
             panelTop.Controls.Add(txtSearch);
             panelTop.Controls.Add(lblCategory);
             panelTop.Controls.Add(comboBox1);
+            panelTop.Controls.Add(lblDateFrom);
+            panelTop.Controls.Add(dtpFrom);
+            panelTop.Controls.Add(lblDateTo);
+            panelTop.Controls.Add(dtpTo);
             panelTop.Controls.Add(btnSearch);
             panelTop.Controls.Add(buttonAdd);
             panelTop.Controls.Add(buttonEdit);
@@ -82,7 +83,7 @@
             panelTop.Location = new Point(0, 60);
             panelTop.Name = "panelTop";
             panelTop.Padding = new Padding(8);
-            panelTop.Size = new Size(1103, 55);
+            panelTop.Size = new Size(1447, 55);
             panelTop.TabIndex = 1;
             // 
             // lblSearch
@@ -95,35 +96,65 @@
             // 
             // txtSearch
             // 
-            txtSearch.Location = new Point(90, 17);
+            txtSearch.Location = new Point(90, 20);
             txtSearch.Name = "txtSearch";
             txtSearch.Size = new Size(160, 23);
             txtSearch.TabIndex = 1;
             // 
             // lblCategory
             // 
-            lblCategory.Location = new Point(325, 20);
+            lblCategory.Location = new Point(274, 20);
             lblCategory.Name = "lblCategory";
-            lblCategory.Size = new Size(79, 23);
+            lblCategory.Size = new Size(64, 23);
             lblCategory.TabIndex = 2;
             lblCategory.Text = "دسته بندی:";
             // 
             // comboBox1
             // 
-            comboBox1.Location = new Point(410, 17);
+            comboBox1.Location = new Point(344, 20);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(160, 23);
             comboBox1.TabIndex = 3;
+            // 
+            // lblDateFrom
+            // 
+            lblDateFrom.Location = new Point(531, 20);
+            lblDateFrom.Name = "lblDateFrom";
+            lblDateFrom.Size = new Size(48, 23);
+            lblDateFrom.TabIndex = 4;
+            lblDateFrom.Text = "از تاریخ:";
+            // 
+            // dtpFrom
+            // 
+            dtpFrom.Location = new Point(585, 20);
+            dtpFrom.Name = "dtpFrom";
+            dtpFrom.Size = new Size(214, 23);
+            dtpFrom.TabIndex = 5;
+            // 
+            // lblDateTo
+            // 
+            lblDateTo.Location = new Point(805, 20);
+            lblDateTo.Name = "lblDateTo";
+            lblDateTo.Size = new Size(45, 23);
+            lblDateTo.TabIndex = 6;
+            lblDateTo.Text = "تا تاریخ:";
+            // 
+            // dtpTo
+            // 
+            dtpTo.Location = new Point(856, 20);
+            dtpTo.Name = "dtpTo";
+            dtpTo.Size = new Size(208, 23);
+            dtpTo.TabIndex = 7;
             // 
             // btnSearch
             // 
             btnSearch.BackColor = Color.SteelBlue;
             btnSearch.FlatStyle = FlatStyle.Flat;
             btnSearch.ForeColor = Color.White;
-            btnSearch.Location = new Point(580, 15);
+            btnSearch.Location = new Point(1079, 17);
             btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(90, 28);
-            btnSearch.TabIndex = 4;
+            btnSearch.Size = new Size(70, 28);
+            btnSearch.TabIndex = 8;
             btnSearch.Text = "🔍 جستجو";
             btnSearch.UseVisualStyleBackColor = false;
             btnSearch.Click += btnSearch_Click;
@@ -133,7 +164,7 @@
             buttonAdd.BackColor = Color.MediumSeaGreen;
             buttonAdd.FlatStyle = FlatStyle.Flat;
             buttonAdd.ForeColor = Color.White;
-            buttonAdd.Location = new Point(779, 16);
+            buttonAdd.Location = new Point(1170, 17);
             buttonAdd.Name = "buttonAdd";
             buttonAdd.Size = new Size(85, 28);
             buttonAdd.TabIndex = 5;
@@ -146,7 +177,7 @@
             buttonEdit.BackColor = Color.Goldenrod;
             buttonEdit.FlatStyle = FlatStyle.Flat;
             buttonEdit.ForeColor = Color.White;
-            buttonEdit.Location = new Point(869, 16);
+            buttonEdit.Location = new Point(1260, 17);
             buttonEdit.Name = "buttonEdit";
             buttonEdit.Size = new Size(85, 28);
             buttonEdit.TabIndex = 6;
@@ -159,7 +190,7 @@
             buttonDelete.BackColor = Color.Firebrick;
             buttonDelete.FlatStyle = FlatStyle.Flat;
             buttonDelete.ForeColor = Color.White;
-            buttonDelete.Location = new Point(959, 16);
+            buttonDelete.Location = new Point(1350, 17);
             buttonDelete.Name = "buttonDelete";
             buttonDelete.Size = new Size(85, 28);
             buttonDelete.TabIndex = 7;
@@ -174,7 +205,7 @@
             panelHeader.Dock = DockStyle.Top;
             panelHeader.Location = new Point(0, 0);
             panelHeader.Name = "panelHeader";
-            panelHeader.Size = new Size(1103, 60);
+            panelHeader.Size = new Size(1447, 60);
             panelHeader.TabIndex = 2;
             // 
             // lblTitle
@@ -190,7 +221,7 @@
             // 
             // ItemsForm
             // 
-            ClientSize = new Size(1103, 600);
+            ClientSize = new Size(1447, 680);
             Controls.Add(dgvItems);
             Controls.Add(panelTop);
             Controls.Add(panelHeader);

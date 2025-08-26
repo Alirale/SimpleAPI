@@ -11,7 +11,7 @@ namespace InventoryManagement
     {
         private readonly BindingList<ItemView> _view = new();
         private readonly BindingSource _bs = new();
-        
+
 
         public ItemsForm()
         {
@@ -186,8 +186,9 @@ namespace InventoryManagement
             {
                 var name = txtSearch.Text?.Trim();
                 var category = comboBox1.SelectedItem is not null ? FromFa(comboBox1.SelectedItem?.ToString()).ToString() : null;
-
-                var items = await SearchItemsFromApiAsync(name, category);
+                var fromDate = dtpFrom.Value.Date;
+                var toDate = dtpTo.Value.Date.AddDays(1).AddMilliseconds(-1); // تا انتهای روز آخرین تاریخ
+                var items = await SearchItemsFromApiAsync(name, category, fromDate, toDate);
 
                 _view.Clear();
                 foreach (var it in items)
@@ -212,16 +213,23 @@ namespace InventoryManagement
             comboBox1.SelectedItem = null;
         }
 
-        private async Task<List<ApiItemDto>> SearchItemsFromApiAsync(string? name, string? category)
+
+        private async Task<List<ApiItemDto>> SearchItemsFromApiAsync(string? name, string? category, DateTime? fromDate, DateTime? toDate)
         {
             var url = "http://localhost:5000/Items/v1/Search";
-
             var query = new List<string>();
+
             if (!string.IsNullOrWhiteSpace(name))
                 query.Add($"Name={Uri.EscapeDataString(name)}");
 
             if (!string.IsNullOrWhiteSpace(category))
                 query.Add($"Category={Uri.EscapeDataString(category)}");
+
+            if (fromDate.HasValue)
+                query.Add($"FromDate={fromDate.Value:yyyy-MM-dd}");
+
+            if (toDate.HasValue)
+                query.Add($"ToDate={toDate.Value:yyyy-MM-dd}");
 
             if (query.Count > 0)
                 url += "?" + string.Join("&", query);
@@ -425,5 +433,15 @@ namespace InventoryManagement
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter() }
         };
+
+        private void panelTop_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void dgvItems_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }

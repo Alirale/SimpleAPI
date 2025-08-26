@@ -56,7 +56,7 @@ namespace Infrastructure.Repository
 
                 var rows = await conn.QueryAsync<ItemDto>(
                     "dbo.Item_Search",
-                    new { Name = name, Category = searchModel?.Category.ToString() },
+                    new { Name = name, Category = searchModel?.Category.ToString(), searchModel?.FromDate, searchModel?.ToDate },
                     commandType: CommandType.StoredProcedure);
 
                 return rows.ToList()!;
